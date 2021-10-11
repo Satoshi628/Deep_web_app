@@ -153,7 +153,8 @@ def Similarity():
             """
     
     st.text("類似度距離:{}".format(st.session_state.Similarity_output_similar))
-    st.text("0~19:とても似ている    20~24:似ている  25~29:あまり似ていない    30~:別物")
+    st.text("0~19:とても似ている    20~24:似ている")
+    st.text("25~29:あまり似ていない    30~:別物")
     #画像は2列で表示する
     col1, col2 = st.columns(2)
 
