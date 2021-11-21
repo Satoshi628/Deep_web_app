@@ -43,7 +43,7 @@ def Deep_Dream():
     if "Deep_Dream_input_image" not in st.session_state:
         st.session_state.Deep_Dream_input_image = image_load("Sample_image/Deep_Dream1.jpg")
     if "Deep_Dream_output_image" not in st.session_state:
-        st.session_state.Deep_Dream_output_image = image_load("Sample_image/Deep_Dream2.png")
+        st.session_state.Deep_Dream_output_image = image_load("Sample_image/Deep_Dream2.jpg")
 
     ##処理部分##
 
@@ -53,7 +53,7 @@ def Deep_Dream():
     else:  #アップロードされていないなら
         #サンプル画像に変える
         st.session_state.Deep_Dream_input_image = image_load("Sample_image/Deep_Dream1.jpg")
-        st.session_state.Deep_Dream_output_image = image_load("Sample_image/Deep_Dream2.png")
+        st.session_state.Deep_Dream_output_image = image_load("Sample_image/Deep_Dream2.jpg")
 
     #Runボタンが押されたら
     if Run_botton:
@@ -64,7 +64,7 @@ def Deep_Dream():
                     ##### ファイルの出力に失敗しました.
                 """
                 st.session_state.Deep_Dream_output_image = image_load(
-                    "Sample_image/Deep_Dream2.png")
+                    "Sample_image/Deep_Dream2.jpg")
         else:
             """
                 ##### 画像を入力してください.
@@ -72,7 +72,7 @@ def Deep_Dream():
 
     if isinstance(st.session_state.Deep_Dream_output_image, bytes):
         extension = st.radio("Select the extension to Download",
-                            ['png', 'jpeg'])
+                            ['jpg', 'jpeg'])
         st.download_button(
             label="Download Output Image",
             data=st.session_state.Deep_Dream_output_image,
@@ -111,9 +111,9 @@ def Similarity():
     Run_botton = st.button('Run')
 
     #画像が入力されていなかった時のサンプル画像
-    if "Similarity_input_image" not in st.session_state:
+    if "Similarity_input_image1" not in st.session_state:
         st.session_state.Similarity_input_image1 = image_load("Sample_image/Similarity1.jpg")
-    if "Similarity_input_image" not in st.session_state:
+    if "Similarity_input_image2" not in st.session_state:
         st.session_state.Similarity_input_image2 = image_load("Sample_image/Similarity2.jpg")
     if "Similarity_output_similar" not in st.session_state:
         st.session_state.Similarity_output_similar = 30
@@ -153,8 +153,7 @@ def Similarity():
             """
     
     st.text("類似度距離:{}".format(st.session_state.Similarity_output_similar))
-    st.text("0~19:とても似ている    20~24:似ている")
-    st.text("25~29:あまり似ていない    30~:別物")
+    st.text("0~19:とても似ている    20~24:似ている  25~29:あまり似ていない    30~:別物")
     #画像は2列で表示する
     col1, col2 = st.columns(2)
 
@@ -169,6 +168,84 @@ def Similarity():
     with col2:
         st.image(
             st.session_state.Similarity_input_image2, caption="入力画像2",
+            use_column_width=True
+        )
+
+
+def Style_Transfer():
+    #レイアウト
+    st.title("Style Transfer")
+    """
+        ###### このAIは、画像の表現を変えるAIです.
+        ### 元となる表現をStyle画像に、変換したい画像をContent画像に入力してください
+    """
+    # typeがNoneだとすべての拡張子が許される。
+    st.session_state.Style_transfer_image_file1 = st.file_uploader("Style画像   File Upload", type=None, key="Style_transfer1")
+    st.session_state.Style_transfer_image_file2 = st.file_uploader("Content画像 File Upload", type=None, key="Style_transfer2")
+    Run_botton = st.button('Run')
+
+    #画像が入力されていなかった時のサンプル画像
+    if "Style_transfer_input_style" not in st.session_state:
+        st.session_state.Style_transfer_input_style = image_load("Sample_image/style.jpg")
+    if "Style_transfer_input_content" not in st.session_state:
+        st.session_state.Style_transfer_input_content = image_load("Sample_image/content.jpg")
+    if "Style_transfer_out" not in st.session_state:
+        st.session_state.Style_transfer_out = image_load("Sample_image/style_transfer.jpg")
+
+    ##処理部分##
+
+    #ファイル1(style)がアップロードされたら
+    if st.session_state.Style_transfer_image_file1:
+        st.session_state.Style_transfer_input_style = image_load(st.session_state.Style_transfer_image_file1)
+    else:  #アップロードされていないなら
+        #サンプル画像に変える
+        st.session_state.Style_transfer_input_style = image_load("Sample_image/style.jpg")
+    
+    #ファイル2(content)がアップロードされたら
+    if st.session_state.Style_transfer_image_file2:
+        st.session_state.Style_transfer_input_content = image_load(st.session_state.Style_transfer_image_file2)
+    else:  #アップロードされていないなら
+        #サンプル画像に変える
+        st.session_state.Style_transfer_input_content = image_load("Sample_image/content.jpg")
+
+    #Runボタンが押されたら
+    if Run_botton:
+        #入力画像があるのなら
+        if st.session_state.Style_transfer_image_file1 and st.session_state.Style_transfer_image_file2:
+            st.session_state.Style_transfer_out = Deep_AI_load(AI_key="Style Transfer",
+                style=st.session_state.Style_transfer_image_file1.getvalue(),
+                content=st.session_state.Style_transfer_image_file2.getvalue())
+            
+            if st.session_state.Style_transfer_out is None:  # 正しく出力出来なかった場合
+                """
+                    ##### ファイルの出力に失敗しました.
+                """
+        else:
+            """
+                #### Please enter two image.
+            """
+    
+    #画像は2列で表示する
+    col1, col2, col3 = st.columns(3)
+
+    # 入力画像表示
+    with col1:
+        st.image(
+            st.session_state.Style_transfer_input_style, caption="Style画像",
+            use_column_width=True
+        )
+    
+    # 出力画像表示
+    with col2:
+        st.image(
+            st.session_state.Style_transfer_input_content, caption="Content画像",
+            use_column_width=True
+        )
+
+    # 出力画像表示
+    with col3:
+        st.image(
+            st.session_state.Style_transfer_out, caption="content画像",
             use_column_width=True
         )
 
@@ -188,7 +265,7 @@ def Colorization():
     if "Colorization_input_image" not in st.session_state:
         st.session_state.Colorization_input_image = image_load("Sample_image/Colorization1.jpg")
     if "Colorization_output_image" not in st.session_state:
-        st.session_state.Colorization_output_image = image_load("Sample_image/Colorization2.png")
+        st.session_state.Colorization_output_image = image_load("Sample_image/Colorization2.jpg")
 
     ##処理部分##
 
@@ -198,7 +275,7 @@ def Colorization():
     else:  #アップロードされていないなら
         #サンプル画像に変える
         st.session_state.Colorization_input_image = image_load("Sample_image/Colorization1.jpg")
-        st.session_state.Colorization_output_image = image_load("Sample_image/Colorization2.png")
+        st.session_state.Colorization_output_image = image_load("Sample_image/Colorization2.jpg")
 
     #Runボタンが押されたら
     if Run_botton:
@@ -208,7 +285,7 @@ def Colorization():
                 """
                     ##### ファイルの出力に失敗しました.
                 """
-                st.session_state.Colorization_output_image = image_load("Sample_image/Colorization2.png")
+                st.session_state.Colorization_output_image = image_load("Sample_image/Colorization2.jpg")
         else:
             """
                 ##### 画像を入力してください.
@@ -216,7 +293,7 @@ def Colorization():
 
     if isinstance(st.session_state.Colorization_output_image, bytes):
         extension = st.radio("Select the extension to Download",
-                            ['png', 'jpeg'])
+                            ['jpg', 'jpeg'])
         st.download_button(
             label="Download Output Image",
             data=st.session_state.Colorization_output_image,
@@ -258,7 +335,7 @@ def High_Resolution():
     if "High_Resolution_input_image" not in st.session_state:
         st.session_state.High_Resolution_input_image = image_load("Sample_image/High_Resolution1.jpg")
     if "High_Resolution_output_image" not in st.session_state:
-        st.session_state.High_Resolution_output_image = image_load("Sample_image/High_Resolution2.png")
+        st.session_state.High_Resolution_output_image = image_load("Sample_image/High_Resolution2.jpg")
 
     ##処理部分##
 
@@ -268,7 +345,7 @@ def High_Resolution():
     else:  #アップロードされていないなら
         #サンプル画像に変える
         st.session_state.High_Resolution_input_image = image_load("Sample_image/High_Resolution1.jpg")
-        st.session_state.High_Resolution_output_image = image_load("Sample_image/High_Resolution2.png")
+        st.session_state.High_Resolution_output_image = image_load("Sample_image/High_Resolution2.jpg")
 
     #Runボタンが押されたら
     if Run_botton:
@@ -278,7 +355,7 @@ def High_Resolution():
                 """
                     ##### ファイルの出力に失敗しました.
                 """
-                st.session_state.High_Resolution_output_image = image_load("Sample_image/High_Resolution2.png")
+                st.session_state.High_Resolution_output_image = image_load("Sample_image/High_Resolution2.jpg")
         else:
             """
                 ##### 画像を入力してください.
@@ -286,7 +363,7 @@ def High_Resolution():
 
     if isinstance(st.session_state.High_Resolution_output_image, bytes):
         extension = st.radio("Select the extension to Download",
-                            ['png', 'jpeg'])
+                            ['jpg', 'jpeg'])
         st.download_button(
             label="Download Output Image",
             data=st.session_state.High_Resolution_output_image,
@@ -327,7 +404,7 @@ def Toy():
     if "Toy_input_image" not in st.session_state:
         st.session_state.Toy_input_image = image_load("Sample_image/Toy1.jpg")
     if "Toy_output_image" not in st.session_state:
-        st.session_state.Toy_output_image = image_load("Sample_image/Toy2.png")
+        st.session_state.Toy_output_image = image_load("Sample_image/Toy2.jpg")
 
     ##処理部分##
 
@@ -337,7 +414,7 @@ def Toy():
     else:  #アップロードされていないなら
         #サンプル画像に変える
         st.session_state.Toy_input_image = image_load("Sample_image/Toy1.jpg")
-        st.session_state.Toy_output_image = image_load("Sample_image/Toy2.png")
+        st.session_state.Toy_output_image = image_load("Sample_image/Toy2.jpg")
 
     #Runボタンが押されたら
     if Run_botton:
@@ -348,7 +425,7 @@ def Toy():
                     ##### ファイルの出力に失敗しました.
                     ##### 人の顔が含まれる画像を入力してください.
                 """
-                st.session_state.Toy_output_image = image_load("Sample_image/Toy2.png")
+                st.session_state.Toy_output_image = image_load("Sample_image/Toy2.jpg")
         else:
             """
                 ##### 画像を入力してください.
@@ -356,7 +433,7 @@ def Toy():
 
     if isinstance(st.session_state.Toy_output_image, bytes):
         extension = st.radio("Select the extension to Download",
-                            ['png', 'jpeg'])
+                            ['jpg', 'jpeg'])
         st.download_button(
             label="Download Output Image",
             data=st.session_state.Toy_output_image,
@@ -385,6 +462,7 @@ def Toy():
 multi_page = MultiApp()
 multi_page.add_app("Deep Dream", Deep_Dream)
 multi_page.add_app("Similaryty", Similarity)
+multi_page.add_app("Style Transfer", Style_Transfer)
 multi_page.add_app("Colorization", Colorization)
 multi_page.add_app("High Resolution", High_Resolution)
 multi_page.add_app("Toy", Toy)
