@@ -3,8 +3,8 @@
 # None
 
 #----- 専用ライブラリ -----#
-import streamlit
-import requests
+# None
+
 #----- 自作モジュール -----#
 # None
 
