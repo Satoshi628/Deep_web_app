@@ -245,7 +245,7 @@ def Style_Transfer():
     # 出力画像表示
     with col3:
         st.image(
-            st.session_state.Style_transfer_out, caption="content画像",
+            st.session_state.Style_transfer_out, caption="出力画像",
             use_column_width=True
         )
 

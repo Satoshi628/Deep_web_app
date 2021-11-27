@@ -1,13 +1,20 @@
 #coding: utf-8
 #----- 標準ライブラリ -----#
-# None
+import os
+from os.path import join, dirname
 
 #----- 専用ライブラリ -----#
+from dotenv import load_dotenv
 import streamlit
 import requests
-#----- 自作モジュール -----#
-from API_Key import _API_KEY
 
+#----- 自作モジュール -----#
+# None
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+API_KEY = os.environ.get("API_KEY")
 
 _AI_DICT = {'Dream':            "https://api.deepai.org/api/deepdream",
             'Similarity':       "https://api.deepai.org/api/image-similarity",
@@ -25,7 +32,7 @@ def deep_ai_func(AI_key, **kwargs):
     output = requests.post(
         _AI_DICT[AI_key],
         files=kwargs,
-        headers={'api-key': _API_KEY}
+        headers={'api-key': API_KEY}
     )
     output = output.json()
     #return None
@@ -39,3 +46,4 @@ def deep_ai_func(AI_key, **kwargs):
             return distance
     return None
 
+print(API_KEY)
