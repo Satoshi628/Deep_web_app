@@ -12,13 +12,13 @@ from deep_AI import deep_ai_func
 # None
 
 
-@st.cache_data
+# @st.cache_data
 def image_load(image):
     img = Image.open(image)
     return img
 
 
-@st.cache_data
+# @st.cache_data
 def Deep_AI_load(**kwargs):
     img = deep_ai_func(**kwargs)
     return img
