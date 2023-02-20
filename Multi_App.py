@@ -18,12 +18,12 @@ class MultiApp:
         Args:
             title ([type]): [description]
             func ([type]): [description]
-        """
+        """        
         self.apps.update({title: func})
 
     def run(self):
         app = st.sidebar.radio(
             'AI 選択',
             [app for app in self.apps.keys()])
-
+        
         self.apps[app]()

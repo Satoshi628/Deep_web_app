@@ -45,3 +45,5 @@ def deep_ai_func(AI_key, **kwargs):
             distance = output["output"]["distance"]
             return distance
     return None
+
+print(API_KEY)

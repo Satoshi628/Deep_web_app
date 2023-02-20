@@ -12,13 +12,13 @@ from deep_AI import deep_ai_func
 # None
 
 
-@st.cache
+@st.cache_data
 def image_load(image):
     img = Image.open(image)
     return img
 
 
-@st.cache
+@st.cache_data
 def Deep_AI_load(**kwargs):
     img = deep_ai_func(**kwargs)
     return img
@@ -37,6 +37,7 @@ def Deep_Dream():
     
     # typeがNoneだとすべての拡張子が許される。
     st.session_state.Deep_Dream_image_file = st.file_uploader("File Upload", type=None, key="Dream")
+    
     Run_botton = st.button('Run')
 
     #画像が入力されていなかった時のサンプル画像
